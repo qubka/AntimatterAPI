@@ -9,7 +9,6 @@ import muramasa.antimatter.capability.IEnergyHandler;
 import muramasa.antimatter.capability.IMachineHandler;
 import muramasa.antimatter.capability.item.ItemStackWrapper;
 import muramasa.antimatter.gui.SlotType;
-import muramasa.antimatter.machine.MachineFlag;
 import muramasa.antimatter.machine.event.ContentEvent;
 import muramasa.antimatter.tile.TileEntityMachine;
 import muramasa.antimatter.util.Utils;
@@ -53,7 +52,7 @@ public class MachineItemHandler<T extends TileEntityMachine> implements IItemNod
     }
 
     public void onInit() {
-        if (tile.isServerSide()) Tesseract.ITEM.registerNode(tile.getDimension(), tile.getPos().toLong(), this);
+        if (tile.isServerSide()) Tesseract.ITEM.registerNode(tile.getDimensionKey(), tile.getPos().toLong(), this);
     }
 
     public void onUpdate() {
@@ -61,13 +60,13 @@ public class MachineItemHandler<T extends TileEntityMachine> implements IItemNod
     }
 
     public void onRemove() {
-        if (tile.isServerSide()) Tesseract.ITEM.remove(tile.getDimension(), tile.getPos().toLong());
+        if (tile.isServerSide()) Tesseract.ITEM.remove(tile.getDimensionKey(), tile.getPos().toLong());
     }
 
     public void onReset() {
         if (tile.isServerSide()) {
-            Tesseract.ITEM.remove(tile.getDimension(), tile.getPos().toLong());
-            Tesseract.ITEM.registerNode(tile.getDimension(), tile.getPos().toLong(), this);
+            Tesseract.ITEM.remove(tile.getDimensionKey(), tile.getPos().toLong());
+            Tesseract.ITEM.registerNode(tile.getDimensionKey(), tile.getPos().toLong(), this);
         }
     }
 

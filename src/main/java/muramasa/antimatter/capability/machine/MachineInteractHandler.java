@@ -38,7 +38,7 @@ public class MachineInteractHandler<T extends TileEntityMachine> extends Interac
             } else if (type == HAMMER) {
                 tile.toggleMachine();
                 // TODO: Replace by new TranslationTextComponent()
-                player.sendMessage(new StringTextComponent("Machine was " + (tile.getMachineState() == MachineState.DISABLED ? "disabled" : "enabled")));
+                //player.sendMessage(new StringTextComponent("Machine was " + (tile.getMachineState() == MachineState.DISABLED ? "disabled" : "enabled")));
                 return true;
             } else if (type == CROWBAR) {
                 return tile.getCapability(AntimatterCaps.COVERABLE).map(h -> h.removeCover(player, side)).orElse(false);

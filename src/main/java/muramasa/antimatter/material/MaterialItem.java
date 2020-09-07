@@ -22,10 +22,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -63,13 +60,13 @@ public class MaterialItem extends ItemBasic<MaterialItem> implements IAntimatter
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (!getMaterial().getChemicalFormula().isEmpty()) {
             if (Screen.hasShiftDown()) {
-                tooltip.add(new StringTextComponent(getMaterial().getChemicalFormula()).applyTextStyle(TextFormatting.DARK_AQUA));
+                tooltip.add(new StringTextComponent(getMaterial().getChemicalFormula()).setStyle(Style.EMPTY.setFormatting(TextFormatting.DARK_AQUA)));
             } else {
-                tooltip.add(new StringTextComponent("Hold Shift to show formula").applyTextStyle(TextFormatting.AQUA).applyTextStyle(TextFormatting.ITALIC));
+                tooltip.add(new StringTextComponent("Hold Shift to show formula").setStyle(Style.EMPTY.setFormatting(TextFormatting.AQUA)).setStyle(Style.EMPTY.setFormatting(TextFormatting.ITALIC)));
             }
         }
         if (type == Data.ROCK) {
-            tooltip.add(new TranslationTextComponent("gti.tooltip.occurrence").appendSibling(material.getDisplayName().applyTextStyle(TextFormatting.YELLOW)));
+            tooltip.add(new TranslationTextComponent("gti.tooltip.occurrence").append(material.getDisplayName()).setStyle(Style.EMPTY.setFormatting(TextFormatting.YELLOW)));
         }
     }
 

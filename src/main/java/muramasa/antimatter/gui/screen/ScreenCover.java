@@ -1,5 +1,6 @@
 package muramasa.antimatter.gui.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import muramasa.antimatter.cover.CoverTiered;
 import muramasa.antimatter.gui.container.ContainerCover;
 import muramasa.antimatter.machine.Tier;
@@ -25,13 +26,13 @@ public class ScreenCover<T extends ContainerCover> extends AntimatterContainerSc
         }
     }
 
-    protected void drawTitle(int mouseX, int mouseY) {
-        Minecraft.getInstance().fontRenderer.drawString(name, getCenteredStringX(name), 4, 0x404040);
+    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY) {
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack, name, getCenteredStringX(name), 4, 0x404040);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
-        drawTexture(gui, guiLeft, guiTop, 0, 0, xSize, ySize);
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        super.drawGuiContainerForegroundLayer(matrixStack, mouseX, mouseY);
+        drawTexture(matrixStack, gui, guiLeft, guiTop, 0, 0, xSize, ySize);
     }
 }

@@ -1,5 +1,6 @@
 package muramasa.antimatter.integration.jei.category;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -21,6 +22,7 @@ import muramasa.antimatter.util.Utils;
 import muramasa.antimatter.util.int4;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -54,10 +56,10 @@ public class RecipeMapCategory implements IRecipeCategory<Recipe> {
 
     public RecipeMapCategory(RecipeMap<?> map, GuiData gui, Tier guiTier) {
         id = map.getId();
-        title = map.getDisplayName().getFormattedText();
+        title = map.getDisplayName().getUnformattedComponentText();
         int4 padding = gui.getPadding(), area = gui.getArea(), progress = gui.getDir().getUV();
-        background = guiHelper.drawableBuilder(gui.getTexture(guiTier,"machine"), area.x, area.y, area.z, area.w).addPadding(padding.x, padding.y, padding.z, padding.w).build();
-        progressBar = guiHelper.drawableBuilder(gui.getTexture(guiTier,"machine"), progress.x, progress.y, progress.z, progress.w).buildAnimated(50, IDrawableAnimated.StartDirection.LEFT, false);
+        background = guiHelper.drawableBuilder(gui.getTexture(guiTier,"machine"), area.getX(), area.getY(), area.getZ(), area.getW()).addPadding(padding.getX(), padding.getY(), padding.getZ(), padding.getW()).build();
+        progressBar = guiHelper.drawableBuilder(gui.getTexture(guiTier,"machine"), progress.getX(), progress.getY(), progress.getZ(), progress.getW()).buildAnimated(50, IDrawableAnimated.StartDirection.LEFT, false);
         icon = guiHelper.createDrawableIngredient(new ItemStack(Data.DEBUG_SCANNER));
         this.gui = gui;
         this.guiTier = guiTier;
@@ -105,9 +107,8 @@ public class RecipeMapCategory implements IRecipeCategory<Recipe> {
     }
 
     @Override
-    public void draw(Recipe recipe, double mouseX, double mouseY) {
-        if (progressBar != null)
-            progressBar.draw(gui.getDir().getPos().x + gui.getArea().x, gui.getDir().getPos().y + gui.getArea().y);
+    public void draw(Recipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+        if (progressBar != null) progressBar.draw(matrixStack, gui.getDir().getPos().getX() + gui.getArea().getX(), gui.getDir().getPos().getY() + gui.getArea().getY());
     }
 
     @Override
@@ -116,7 +117,7 @@ public class RecipeMapCategory implements IRecipeCategory<Recipe> {
         IGuiFluidStackGroup fluidGroup = layout.getFluidStacks();
         List<SlotData> slots;
         int groupIndex = 0, slotCount;
-        int offsetX = gui.getArea().x + JEI_OFFSET_X, offsetY = gui.getArea().y + JEI_OFFSET_Y;
+        int offsetX = gui.getArea().getX() + JEI_OFFSET_X, offsetY = gui.getArea().getY() + JEI_OFFSET_Y;
 
         int inputItems = 0, inputFluids = 0;
         if (recipe.hasInputItems()) {
@@ -175,16 +176,16 @@ public class RecipeMapCategory implements IRecipeCategory<Recipe> {
         final int finalInputItems = inputItems;
 //        final int finalInputFluids = inputFluids;
         itemGroup.addTooltipCallback((index, input, stack, tooltip) -> {
-            if (input && Utils.hasNoConsumeTag(stack)) tooltip.add(TextFormatting.WHITE + "Does not get consumed in the process");
+            if (input && Utils.hasNoConsumeTag(stack)) tooltip.add(new StringTextComponent(TextFormatting.WHITE + "Does not get consumed in the process"));
             if (recipe.hasChances() && !input) {
                 int chanceIndex = index - finalInputItems;
                 if (recipe.getChances()[chanceIndex] < 100) {
-                    tooltip.add(TextFormatting.WHITE + "Chance: " + recipe.getChances()[chanceIndex] + "%");
+                    tooltip.add(new StringTextComponent(TextFormatting.WHITE + "Chance: " + recipe.getChances()[chanceIndex] + "%"));
                 }
             }
         });
         fluidGroup.addTooltipCallback((index, input, stack, tooltip) -> {
-            if (input && Utils.hasNoConsumeTag(stack)) tooltip.add(TextFormatting.WHITE + "Does not get consumed in the process");
+            if (input && Utils.hasNoConsumeTag(stack)) tooltip.add(new StringTextComponent(TextFormatting.WHITE + "Does not get consumed in the process"));
             //TODO add fluid chances to recipe
 //            if (wrapper.recipe.hasChances() && !input) {
 //                int chanceIndex = index - finalInputFluids;

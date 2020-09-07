@@ -3,6 +3,9 @@ package muramasa.antimatter.tile;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -30,8 +33,8 @@ public abstract class TileEntityBase extends TileEntity {
         return !world.isRemote;
     }
 
-    public int getDimension() {
-        return world.getDimension().getType().getId();
+    public RegistryKey<World> getDimensionKey() {
+        return world.getDimensionKey();
     }
 
     //TODO pass constant StringBuilder

@@ -195,7 +195,6 @@ public class Data {
         }
 
         @Override
-        @ParametersAreNonnullByDefault
         public ScreenBasicMachine<ContainerMachine> create(ContainerMachine container, PlayerInventory inv, ITextComponent name) {
             return new ScreenBasicMachine<>(container, inv, name);
         }
@@ -208,7 +207,6 @@ public class Data {
         }
 
         @Override
-        @ParametersAreNonnullByDefault
         public ScreenCover<ContainerCover> create(ContainerCover container, PlayerInventory inv, ITextComponent name) {
             return new ScreenCover<>(container,inv,name);
         }
@@ -221,7 +219,6 @@ public class Data {
         }
 
         @Override
-        @ParametersAreNonnullByDefault
         public ScreenMultiMachine<ContainerMultiMachine> create(ContainerMultiMachine container, PlayerInventory inv, ITextComponent name) {
             return new ScreenMultiMachine<>(container, inv, name);
         }
@@ -234,7 +231,6 @@ public class Data {
         }
 
         @Override
-        @ParametersAreNonnullByDefault
         public ScreenHatch<ContainerHatch> create(ContainerHatch container, PlayerInventory inv, ITextComponent name) {
             return new ScreenHatch<>(container, inv, name);
         }

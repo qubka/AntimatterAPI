@@ -153,7 +153,7 @@ public class Machine<T extends Machine<T>> implements IAntimatterObject, IRegist
     }
 
     public ResourceLocation getOverlayModel(Direction side) {
-        return new ResourceLocation(domain, "block/machine/overlay/" + id + "/" + side.getName());
+        return new ResourceLocation(domain, "block/machine/overlay/" + id + "/" + side.getName2());
     }
 
     public RecipeMap<?> getRecipeMap() {

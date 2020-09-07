@@ -1,5 +1,6 @@
 package muramasa.antimatter.gui.widget;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 
 public class ScreenWidget {
@@ -9,6 +10,7 @@ public class ScreenWidget {
      * Param 5-8: What part of the texture file to cut out and draw
      * Param 9-10: How big the entire texture file is in general (pow2 only)
      *
+     * @poram matrixStack Matrix stack
      * @param renderX Where to draw on the screen
      * @param renderY Where to draw on the screen
      * @param renderWidth How big to draw on the screen
@@ -20,8 +22,8 @@ public class ScreenWidget {
      * @param totalTextureFileWidth The total texture file size
      * @param totalTextureFileHeight The total texture file size
      */
-    public static void blit(int renderX, int renderY, int renderWidth, int renderHeight, int textureX, int textureY, int textureWidth, int textureHeight, int totalTextureFileWidth, int totalTextureFileHeight)
+    public static void blit(MatrixStack matrixStack, int renderX, int renderY, int renderWidth, int renderHeight, int textureX, int textureY, int textureWidth, int textureHeight, int totalTextureFileWidth, int totalTextureFileHeight)
     {
-        AbstractGui.blit(renderX, renderY, renderWidth, renderHeight, textureX, textureY, textureWidth, textureHeight, totalTextureFileWidth, totalTextureFileHeight);
+        AbstractGui.blit(matrixStack, renderX, renderY, renderWidth, renderHeight, textureX, textureY, textureWidth, textureHeight, totalTextureFileWidth, totalTextureFileHeight);
     }
 }

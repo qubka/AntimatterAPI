@@ -19,7 +19,7 @@ public class BehaviourBlockRotate implements IItemUse<IAntimatterTool> {
     @Override
     public ActionResultType onItemUse(IAntimatterTool instance, ItemUseContext c) {
         BlockState state = c.getWorld().getBlockState(c.getPos());
-        if (state.getBlock().getValidRotations(state, c.getWorld(), c.getPos()) != null && c.getPlayer() != null) {
+        if (/*state.getBlock().getValidRotations(state, c.getWorld(), c.getPos()) != null && */c.getPlayer() != null) {
             state.rotate(c.getWorld(), c.getPos(), c.getPlayer().isCrouching() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90);
             c.getItem().damageItem(instance.getType().getUseDurability(), c.getPlayer(), (p) -> p.sendBreakAnimation(c.getHand()));
             return ActionResultType.SUCCESS;

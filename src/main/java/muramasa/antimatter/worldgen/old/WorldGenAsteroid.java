@@ -12,6 +12,7 @@ import muramasa.antimatter.worldgen.object.WorldGenBase;
 import muramasa.antimatter.worldgen.object.WorldGenVeinLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -20,7 +21,7 @@ import net.minecraft.world.gen.ChunkGenerator;
 
 import java.util.List;
 
-public class WorldGenAsteroid extends WorldGenBase {
+public class WorldGenAsteroid extends WorldGenBase<WorldGenAsteroid> {
 
     private static int mSize = 100;
 
@@ -37,8 +38,8 @@ public class WorldGenAsteroid extends WorldGenBase {
     private static BlockState END_STONE_STATE = null;
     private static BlockState GRANITE_RED_STATE = null;
 
-    public WorldGenAsteroid(String id, int... dimensions) {
-        super(id, WorldGenAsteroid.class, dimensions);
+    public WorldGenAsteroid(String id, RegistryKey<World>... dims) {
+        super(id, WorldGenAsteroid.class, dims);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class WorldGenAsteroid extends WorldGenBase {
 
     public boolean generate(World world, XSTR rand, int passedX, int passedZ, BlockPos.Mutable pos, BlockState state, ChunkGenerator generator, AbstractChunkProvider provider) {
         if (mEndAsteroidProbability <= 1 || rand.nextInt(mEndAsteroidProbability) == 0) {
-            List<WorldGenVeinLayer> layers = AntimatterWorldGenerator.all(WorldGenVeinLayer.class, world.getDimension().getType().getId());
+            List<WorldGenVeinLayer> layers = AntimatterWorldGenerator.all(WorldGenVeinLayer.class, world.getDimensionKey());
             int layerCount = layers.size();
             WorldGenVeinLayer layerToGen = null;
             if (WorldGenVeinLayer.getTotalWeight() > 0 && layerCount > 0) {
@@ -126,7 +127,7 @@ public class WorldGenAsteroid extends WorldGenBase {
                                             } else if (ranOre < 10) {
                                                 WorldGenHelper.setOre(world, pos, state, layerToGen.getMaterial(3), Data.ORE);
                                             } else {
-                                                if (world.getDimension().getType().getId() == Ref.ASTEROIDS) {
+                                                if (world.getDimensionKey() == Ref.ASTEROIDS) {
                                                     WorldGenHelper.setState(world, pos, GRANITE_RED_STATE);
                                                 } else {
                                                     WorldGenHelper.setState(world, pos, END_STONE_STATE);

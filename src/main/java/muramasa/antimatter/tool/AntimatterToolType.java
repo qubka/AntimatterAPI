@@ -13,6 +13,7 @@ import muramasa.antimatter.behaviour.IBehaviour;
 import muramasa.antimatter.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.item.*;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -42,7 +43,7 @@ public class AntimatterToolType implements IAntimatterObject {
     private int baseQuality, overlayLayers;
     private final float baseAttackDamage, baseAttackSpeed;
     private ItemGroup itemGroup;
-    private Tag<Item> tag, forgeTag; // Set?
+    private ITag.INamedTag<Item> tag, forgeTag; // Set?
     private UseAction useAction;
     private Class<? extends IAntimatterTool> toolClass;
     @Nullable private SoundEvent useSound;
@@ -78,7 +79,7 @@ public class AntimatterToolType implements IAntimatterObject {
         this.baseAttackSpeed = baseAttackSpeed;
         this.overlayLayers = 1;
         this.itemGroup = Ref.TAB_TOOLS;
-        this.tag = Utils.getItemTag(new ResourceLocation(Ref.ID, id));
+        this.tag = Utils.getItemTag(Ref.ID.concat(id));
         this.forgeTag = Utils.getForgeItemTag("tools/".concat(id));
         this.useAction = UseAction.NONE;
         this.toolClass = MaterialTool.class;
@@ -175,7 +176,7 @@ public class AntimatterToolType implements IAntimatterObject {
     }
 
     public AntimatterToolType setTag(ResourceLocation loc) {
-        this.tag = Utils.getItemTag(loc);
+        this.tag = Utils.getItemTag(loc.toString());
         this.forgeTag = Utils.getForgeItemTag(loc.getNamespace());
         return this;
     }
@@ -355,11 +356,11 @@ public class AntimatterToolType implements IAntimatterObject {
         return itemGroup;
     }
 
-    public Tag<Item> getTag() {
+    public ITag.INamedTag<Item> getTag() {
         return tag;
     }
 
-    public Tag<Item> getForgeTag() {
+    public ITag.INamedTag<Item> getForgeTag() {
         return forgeTag;
     }
 

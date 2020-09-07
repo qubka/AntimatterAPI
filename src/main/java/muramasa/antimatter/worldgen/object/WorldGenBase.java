@@ -3,6 +3,8 @@ package muramasa.antimatter.worldgen.object;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import muramasa.antimatter.worldgen.AntimatterWorldGenerator;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Arrays;
@@ -14,16 +16,16 @@ public class WorldGenBase<T extends WorldGenBase<?>> {
 
     private String id;
     private boolean enabled = true;
-    private Set<Integer> dimensions;
+    private Set<RegistryKey<World>> dims;
     private boolean custom;
 
     public WorldGenBase() {
 
     }
 
-    public WorldGenBase(String id, Class<? extends WorldGenBase<?>> c, int... dimensions) {
+    public WorldGenBase(String id, Class<? extends WorldGenBase<?>> c, RegistryKey<World>... dims) {
         this.id = id;
-        this.dimensions = Arrays.stream(dimensions).boxed().collect(Collectors.toCollection(ObjectOpenHashSet::new));
+        this.dims = Arrays.stream(dims).collect(Collectors.toCollection(ObjectOpenHashSet::new));
         AntimatterWorldGenerator.register(c, this);
     }
 
@@ -35,8 +37,8 @@ public class WorldGenBase<T extends WorldGenBase<?>> {
         return enabled;
     }
 
-    public Set<Integer> getDims() {
-        return dimensions;
+    public Set<RegistryKey<World>> getDims() {
+        return dims;
     }
 
     public boolean isCustom() {
@@ -54,7 +56,7 @@ public class WorldGenBase<T extends WorldGenBase<?>> {
     }
 
     public WorldGenBase<T> build() {
-        if (dimensions == null) throw new IllegalStateException("WorldGenBase - " + id + ": dimensions cannot be null");
+        if (dims == null) throw new IllegalStateException("WorldGenBase - " + id + ": dimensions cannot be null");
         return this;
     }
 

@@ -1,5 +1,6 @@
 package muramasa.antimatter.gui.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
@@ -7,6 +8,7 @@ import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -19,31 +21,32 @@ public abstract class AntimatterContainerScreen<T extends Container> extends Con
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
-    public void drawTexture(ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY) {
+    public void drawTexture(MatrixStack matrixStack, ResourceLocation loc, int left, int top, int x, int y, int sizeX, int sizeY) {
         RenderSystem.color4f(1, 1, 1, 1);
         Minecraft.getInstance().textureManager.bindTexture(loc);
-        blit(left, top, x, y, sizeX, sizeY);
+        blit(matrixStack, left, top, x, y, sizeX, sizeY);
     }
 
     public int getCenteredStringX(String s) {
         return xSize / 2 - Minecraft.getInstance().fontRenderer.getStringWidth(s) / 2;
     }
 
-    public void drawTooltipInArea(String line, int mouseX, int mouseY, int x, int y, int sizeX, int sizeY) {
-        List<String> list = new ObjectArrayList<>();
-        list.add(line);
-        drawTooltipInArea(list, mouseX, mouseY, x, y, sizeX, sizeY);
+    public void drawTooltipInArea(MatrixStack matrixStack, String line, int mouseX, int mouseY, int x, int y, int sizeX, int sizeY) {
+        // TODO: Fix that
+        //List<? extends IReorderingProcessor> list = new ObjectArrayList<>();
+        //list.add(line);
+        //drawTooltipInArea(matrixStack, list, mouseX, mouseY, x, y, sizeX, sizeY);
     }
 
-    public void drawTooltipInArea(List<String> lines, int mouseX, int mouseY, int x, int y, int sizeX, int sizeY) {
+    public void drawTooltipInArea(MatrixStack matrixStack, List<? extends IReorderingProcessor> lines, int mouseX, int mouseY, int x, int y, int sizeX, int sizeY) {
         if (isInGui(x, y, sizeX, sizeY, mouseX, mouseY)) {
-            renderTooltip(lines, mouseX - guiLeft, mouseY - guiTop);
+            renderTooltip(matrixStack, lines, mouseX - guiLeft, mouseY - guiTop);
         }
     }
 

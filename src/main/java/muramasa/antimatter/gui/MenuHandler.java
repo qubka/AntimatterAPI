@@ -38,8 +38,6 @@ public abstract class MenuHandler<T extends Container, U extends Screen & IHasCo
 
     @MethodsReturnNonnullByDefault
     public abstract T getMenu(Object tile, PlayerInventory playerInv, int windowId);
-
-    @ParametersAreNonnullByDefault
     @Override //Overridden to give proper names
     public abstract U create(T container, PlayerInventory inv, ITextComponent name);
 

@@ -9,8 +9,11 @@ import muramasa.antimatter.datagen.resources.DynamicResourcePackFinder;
 import muramasa.antimatter.util.XSTR;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 public class Ref {
 
@@ -98,10 +101,7 @@ public class Ref {
     public static final String MOD_UB = "undergroundbiomes";
 
     /** Dimension IDs **/
-    public static final int OVERWORLD = 0;
-    public static final int NETHER = -1;
-    public static final int END = 1;
-    public static final int MOON = -99; //TODO, Find ID
-    public static final int MARS = -99; //TODO, Find ID
-    public static final int ASTEROIDS = -30; //TODO, Validate ID
+    public static final RegistryKey<World> MOON = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation("moon"));
+    public static final RegistryKey<World> MARS = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation("mars"));
+    public static final RegistryKey<World> ASTEROIDS = RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation("asteroids"));
 }

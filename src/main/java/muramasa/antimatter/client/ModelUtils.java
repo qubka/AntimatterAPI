@@ -5,9 +5,9 @@ import muramasa.antimatter.Ref;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.TransformationMatrix;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.container.PlayerContainer;
@@ -30,13 +30,13 @@ public class ModelUtils {
         return ModelLoader.instance().getUnbakedModel(new ModelResourceLocation("builtin/missing", "missing"));
     }
 
-    public static IBakedModel getBakedFromQuads(BlockModel model, List<BakedQuad> quads, Function<Material, TextureAtlasSprite> getter) {
+    public static IBakedModel getBakedFromQuads(BlockModel model, List<BakedQuad> quads, Function<RenderMaterial, TextureAtlasSprite> getter) {
         SimpleBakedModel.Builder builder = new SimpleBakedModel.Builder(model, ItemOverrideList.EMPTY, true).setTexture(getter.apply(model.resolveTextureName("particle")));
         quads.forEach(builder::addGeneralQuad);
         return builder.build();
     }
 
-    public static IBakedModel getBakedFromModel(BlockModel model, ModelBakery bakery, Function<Material, TextureAtlasSprite> getter, IModelTransform transform, ResourceLocation loc) {
+    public static IBakedModel getBakedFromModel(BlockModel model, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> getter, IModelTransform transform, ResourceLocation loc) {
         List<BakedQuad> generalQuads = model.bakeModel(bakery, model, getter, transform, loc, true).getQuads(null, null, Ref.RNG, EmptyModelData.INSTANCE);
         SimpleBakedModel.Builder builder = new SimpleBakedModel.Builder(model, ItemOverrideList.EMPTY, true).setTexture(getter.apply(model.resolveTextureName("particle")));
         generalQuads.forEach(builder::addGeneralQuad);
@@ -61,8 +61,8 @@ public class ModelUtils {
         return Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(loc);
     }
 
-    public static Material getBlockMaterial(ResourceLocation loc) {
-        return new Material(PlayerContainer.LOCATION_BLOCKS_TEXTURE, loc);
+    public static RenderMaterial getBlockMaterial(ResourceLocation loc) {
+        return new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, loc);
     }
 
     public static List<BakedQuad> trans(List<BakedQuad> quads, Vector3f rotationL, Vector3f rotationR) {

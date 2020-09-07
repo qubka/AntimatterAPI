@@ -9,8 +9,6 @@ import net.minecraft.util.Hand;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
 public interface IInteractHandler<T extends TileEntity> extends ICapabilityHandler {
 
     boolean onInteract(PlayerEntity player, Hand hand, Direction side, @Nullable AntimatterToolType type);

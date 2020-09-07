@@ -32,19 +32,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.*;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IItemProvider;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolType;
@@ -352,39 +351,37 @@ public class Utils {
         transferFluids(from,to,-1);
     }
 
-    public static Optional<World> getServerWorld(int dimension) {
-        DimensionType type = DimensionType.getById(dimension);
-        if (type == null) return Optional.empty();
-        return Optional.of(ServerLifecycleHooks.getCurrentServer().getWorld(type));
+    public static Optional<World> getServerWorld(Object dimension) {
+        return Optional.ofNullable(ServerLifecycleHooks.getCurrentServer().getWorld((RegistryKey<World>)dimension));
     }
 
     /**
      * Creates a new {@link EnterBlockTrigger} for use with recipe unlock criteria.
      */
-    public static EnterBlockTrigger.Instance enteredBlock(Block blockIn) {
+    /*public static EnterBlockTrigger.Instance enteredBlock(Block blockIn) {
         return new EnterBlockTrigger.Instance(blockIn, StatePropertiesPredicate.EMPTY);
-    }
+    }*/
 
     /**
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having a certain item.
      */
-    public static InventoryChangeTrigger.Instance hasItem(IItemProvider itemIn) {
+    /*public static InventoryChangeTrigger.Instance hasItem(IItemProvider itemIn) {
         return hasItem(ItemPredicate.Builder.create().item(itemIn).build());
-    }
+    }*/
 
     /**
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having an item within the given tag.
      */
-    public static InventoryChangeTrigger.Instance hasItem(Tag<Item> tagIn) {
+    /*public static InventoryChangeTrigger.Instance hasItem(ITag.INamedTag<Item> tagIn) {
         return hasItem(ItemPredicate.Builder.create().tag(tagIn).build());
-    }
+    }*/
 
     /**
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having a certain item.
      */
-    public static InventoryChangeTrigger.Instance hasItem(ItemPredicate... predicates) {
+    /*public static InventoryChangeTrigger.Instance hasItem(ItemPredicate... predicates) {
         return new InventoryChangeTrigger.Instance(UNBOUNDED, UNBOUNDED, UNBOUNDED, predicates);
-    }
+    }*/
 
 //    @Nullable
 //    public static Fluid getFluidById(int id) {
@@ -574,7 +571,7 @@ public class Utils {
     final static double INTERACTION_OFFSET = 0.25;
 
     public static Direction getInteractSide(BlockRayTraceResult res) {
-        Vec3d vec = res.getHitVec();
+        Vector3d vec = res.getHitVec();
         return getInteractSide(res.getFace(), (float)vec.x - res.getPos().getX(), (float)vec.y - res.getPos().getY(), (float)vec.z - res.getPos().getZ());
     }
 
@@ -704,7 +701,7 @@ public class Utils {
      * @param damage Damage that should be taken for the ItemStack
      * @return true if block is successfully broken, false if not
      */
-    public static boolean breakBlock(World world, @Nullable PlayerEntity player, ItemStack stack, BlockPos pos, int damage) {
+    public static boolean breakBlock(ServerWorld world, @Nullable PlayerEntity player, ItemStack stack, BlockPos pos, int damage) {
         BlockState state = world.getBlockState(pos);
         int exp = 0;
         if (!world.isRemote) {
@@ -747,9 +744,9 @@ public class Utils {
      * @param world World instance
      * @return if tree logging was successful
      */
-    public static boolean treeLogging(@Nonnull IAntimatterTool tool, @Nonnull ItemStack stack, @Nonnull BlockPos start, @Nonnull PlayerEntity player, @Nonnull World world) {
+    public static boolean treeLogging(@Nonnull IAntimatterTool tool, @Nonnull ItemStack stack, @Nonnull BlockPos start, @Nonnull PlayerEntity player, @Nonnull ServerWorld world) {
         if (!AntimatterConfig.GAMEPLAY.SMARTER_TREE_DETECTION) {
-            BlockPos.Mutable tempPos = new BlockPos.Mutable(start);
+            BlockPos.Mutable tempPos = new BlockPos.Mutable(start.getX(), start.getY(), start.getZ());
             for (int y = start.getY() + 1; y < start.getY() + AntimatterConfig.GAMEPLAY.AXE_TIMBER_MAX; y++) {
                 if (stack.getDamage() < 2) return false;
                 tempPos.move(Direction.UP);
@@ -815,7 +812,7 @@ public class Utils {
      * @return set of BlockPos in the specified range
      */
     public static ImmutableSet<BlockPos> getBlocksToBreak(@Nonnull World world, @Nonnull PlayerEntity player, int column, int row, int depth) {
-        Vec3d lookPos = player.getEyePosition(1), rotation = player.getLook(1), realLookPos = lookPos.add(rotation.x * 5, rotation.y * 5, rotation.z * 5);
+        Vector3d lookPos = player.getEyePosition(1), rotation = player.getLook(1), realLookPos = lookPos.add(rotation.x * 5, rotation.y * 5, rotation.z * 5);
         BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(lookPos, realLookPos, RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.NONE, player));
         Direction playerDirection = player.getHorizontalFacing();
         Direction.Axis playerAxis = playerDirection.getAxis(), faceAxis = result.getFace().getAxis();
@@ -932,8 +929,8 @@ public class Utils {
      * @param tag a ItemTag, preferably already created
      * @return BlockTag variant of the ItemTag
      */
-    public static Tag<Block> itemToBlockTag(Tag<Item> tag) {
-        return new BlockTags.Wrapper(tag.getId());
+    public static ITag.INamedTag<Block> itemToBlockTag(ITag.INamedTag<Item> tag) {
+        return BlockTags.makeWrapperTag(tag.getName().toString());
     }
 
     /**
@@ -941,49 +938,57 @@ public class Utils {
      * @param tag a BlockTag, preferably already created
      * @return ItemTag variant of the BlockTag
      */
-    public static Tag<Item> blockToItemTag(Tag<Block> tag) {
-        return new ItemTags.Wrapper(tag.getId());
+    public static ITag.INamedTag<Item> blockToItemTag(ITag.INamedTag<Block> tag) {
+        return ItemTags.makeWrapperTag(tag.getName().toString());
     }
 
     /**
-     * @param loc ResourceLocation of a BlockTag, can be new or old
+     * @param name name of a BlockTag, can be new or old
      * @return BlockTag
      */
-    public static Tag<Block> getBlockTag(ResourceLocation loc) {
-        return new BlockTags.Wrapper(loc);
+    public static ITag.INamedTag<Block> getBlockTag(String name) {
+        return BlockTags.makeWrapperTag(name);
     }
 
     /**
      * @param name name of a BlockTag, can be new or old, has the namespace "forge" attached
      * @return BlockTag
      */
-    public static Tag<Block> getForgeBlockTag(String name) {
-        return getBlockTag(new ResourceLocation("forge", name));
+    public static ITag.INamedTag<Block> getForgeBlockTag(String name) {
+        return BlockTags.makeWrapperTag("forge".concat(name));
     }
 
     /**
-     * @param loc ResourceLocation of a ItemTag, can be new or old
+     * @param name ResourceLocation of a ItemTag, can be new or old
      * @return ItemTag
      */
-    public static Tag<Item> getItemTag(ResourceLocation loc) {
-        return new ItemTags.Wrapper(loc);
+    public static ITag.INamedTag<Item> getItemTag(String name) {
+        return ItemTags.makeWrapperTag(name);
     }
 
     /**
      * @param name name of a ItemTag, can be new or old, has the namespace "forge" attached
      * @return ItemTag
      */
-    public static Tag<Item> getForgeItemTag(String name) {
+    public static ITag.INamedTag<Item> getForgeItemTag(String name) {
         // TODO: Change "wood" -> "wooden", forge recognises "wooden"
-        return getItemTag(new ResourceLocation("forge", name));
+        return ItemTags.makeWrapperTag("forge".concat(name));
+    }
+
+    /**
+     * @param name name of a FluidTag, can be new or old
+     * @return FluidTag
+     */
+    public static ITag.INamedTag<Fluid> getFluidTag(String name) {
+        return FluidTags.makeWrapperTag(name);
     }
 
     /**
      * @param name name of a FluidTag, can be new or old, has the namespace "forge" attached
      * @return FluidTag
      */
-    public static Tag<Fluid> getForgeFluidTag(String name) {
-        return new FluidTags.Wrapper(new ResourceLocation("forge", name));
+    public static ITag.INamedTag<Fluid> getForgeFluidTag(String name) {
+        return FluidTags.makeWrapperTag("forge".concat(name));
     }
 
     /**

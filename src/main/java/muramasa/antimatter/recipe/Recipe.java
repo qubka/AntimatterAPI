@@ -131,7 +131,7 @@ public class Recipe {
         if (itemsInput != null) {
             builder.append("\nInput Items: { ");
             for (int i = 0; i < itemsInput.length; i++) {
-                builder.append(itemsInput[i].getDisplayName().getFormattedText() + " x" + itemsInput[i].getCount());
+                builder.append(itemsInput[i].getDisplayName().getUnformattedComponentText() + " x" + itemsInput[i].getCount());
                 if (i != itemsInput.length - 1) builder.append(", ");
             }
             builder.append(" }\n");
@@ -139,7 +139,7 @@ public class Recipe {
         if (itemsOutput != null) {
             builder.append("Output Items: { ");
             for (int i = 0; i < itemsOutput.length; i++) {
-                builder.append(itemsOutput[i].getDisplayName().getFormattedText() + " x" + itemsOutput[i].getCount());
+                builder.append(itemsOutput[i].getDisplayName().getUnformattedComponentText() + " x" + itemsOutput[i].getCount());
                 if (i != itemsOutput.length - 1) builder.append(", ");
             }
             builder.append(" }\n");

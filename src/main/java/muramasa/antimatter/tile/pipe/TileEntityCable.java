@@ -15,14 +15,14 @@ public class TileEntityCable extends TileEntityPipe implements IGTCable {
     @Override
     public void onFirstTick() {
         super.onFirstTick();
-        if (isServerSide()) Tesseract.GT_ENERGY.registerConnector(getDimension(), pos.toLong(), this); // this is connector class
+        if (isServerSide()) Tesseract.GT_ENERGY.registerConnector(getDimensionKey(), pos.toLong(), this); // this is connector class
     }
 
     @Override
     public void refreshConnection() {
         if (isServerSide()) {
-            Tesseract.GT_ENERGY.remove(getDimension(), pos.toLong());
-            Tesseract.GT_ENERGY.registerConnector(getDimension(), pos.toLong(), this); // this is connector class
+            Tesseract.GT_ENERGY.remove(getDimensionKey(), pos.toLong());
+            Tesseract.GT_ENERGY.registerConnector(getDimensionKey(), pos.toLong(), this); // this is connector class
         } else {
             super.refreshConnection();
         }
@@ -30,7 +30,7 @@ public class TileEntityCable extends TileEntityPipe implements IGTCable {
 
     @Override
     public void onRemove() {
-        if (isServerSide()) Tesseract.GT_ENERGY.remove(getDimension(), pos.toLong());
+        if (isServerSide()) Tesseract.GT_ENERGY.remove(getDimensionKey(), pos.toLong());
         super.onRemove();
     }
 

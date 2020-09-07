@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import tesseract.Tesseract;
@@ -52,7 +53,7 @@ public class BlockCable extends BlockPipe<Cable<?>> {
     }
 
     @Override
-    public boolean isFireSource(BlockState state, IBlockReader world, BlockPos pos, Direction side) {
+    public boolean isFireSource(BlockState state, IWorldReader world, BlockPos pos, Direction side) {
         return true;
     }
 
@@ -75,7 +76,7 @@ public class BlockCable extends BlockPipe<Cable<?>> {
 
     @Override
     public List<String> getInfo(List<String> info, World world, BlockState state, BlockPos pos) {
-        ITickingController controller = Tesseract.GT_ENERGY.getController(world.getDimension().getType().getId(), pos.toLong());
+        ITickingController controller = Tesseract.GT_ENERGY.getController(world.getDimensionKey(), pos.toLong());
         if (controller != null) info.addAll(Arrays.asList(controller.getInfo()));
         return info;
     }

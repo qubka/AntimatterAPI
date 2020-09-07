@@ -10,8 +10,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
-
-@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public interface IComponentHandler {
 

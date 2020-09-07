@@ -9,6 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class BehaviourAOEBreak implements IBlockDestroyed<IAntimatterTool> {
 
@@ -45,7 +46,7 @@ public class BehaviourAOEBreak implements IBlockDestroyed<IAntimatterTool> {
         PlayerEntity player = (PlayerEntity) entity;
         for (BlockPos blockPos : Utils.getHarvestableBlocksToBreak(world, player, instance, column, row, depth)) {
             if (!instance.hasEnoughDurability(stack, instance.getType().getUseDurability(), instance.getType().isPowered())) return true;
-            if (!Utils.breakBlock(world, player, stack, blockPos, instance.getType().getUseDurability())) break;
+            if (!Utils.breakBlock((ServerWorld)world, player, stack, blockPos, instance.getType().getUseDurability())) break;
         }
         return true;
     }

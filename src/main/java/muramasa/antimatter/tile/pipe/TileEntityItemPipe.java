@@ -19,14 +19,14 @@ public class TileEntityItemPipe extends TileEntityPipe implements IItemPipe, ITi
     @Override
     public void onFirstTick() {
         super.onFirstTick();
-        if (isServerSide()) Tesseract.ITEM.registerConnector(getDimension(), pos.toLong(), this); // this is connector class
+        if (isServerSide()) Tesseract.ITEM.registerConnector(getDimensionKey(), pos.toLong(), this); // this is connector class
     }
 
     @Override
     public void refreshConnection() {
         if (isServerSide()) {
-            Tesseract.ITEM.remove(getDimension(), pos.toLong());
-            Tesseract.ITEM.registerConnector(getDimension(), pos.toLong(), this); // this is connector class
+            Tesseract.ITEM.remove(getDimensionKey(), pos.toLong());
+            Tesseract.ITEM.registerConnector(getDimensionKey(), pos.toLong(), this); // this is connector class
         } else {
             super.refreshConnection();
         }
@@ -34,7 +34,7 @@ public class TileEntityItemPipe extends TileEntityPipe implements IItemPipe, ITi
 
     @Override
     public void onRemove() {
-        if (isServerSide()) Tesseract.ITEM.remove(getDimension(), pos.toLong());
+        if (isServerSide()) Tesseract.ITEM.remove(getDimensionKey(), pos.toLong());
         super.onRemove();
     }
 

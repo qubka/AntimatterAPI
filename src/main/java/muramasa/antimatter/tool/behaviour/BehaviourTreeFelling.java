@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class BehaviourTreeFelling implements IBlockDestroyed<IAntimatterTool> {
 
@@ -28,7 +29,7 @@ public class BehaviourTreeFelling implements IBlockDestroyed<IAntimatterTool> {
             PlayerEntity player = (PlayerEntity) entity;
             if (Utils.isToolEffective(instance, state) && !player.isCrouching()) { // Only when player isn't shifting/crouching this ability activates
                 if (state.getBlock().isIn(BlockTags.LOGS)) {
-                    Utils.treeLogging(instance, stack, pos, player, world);
+                    Utils.treeLogging(instance, stack, pos, player, (ServerWorld) world);
                 }
             }
         }

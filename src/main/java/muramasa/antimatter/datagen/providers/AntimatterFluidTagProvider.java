@@ -9,7 +9,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.FluidTagsProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+//import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 
@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//TODO: REWORK CLASS
 public class AntimatterFluidTagProvider extends FluidTagsProvider implements IAntimatterProvider {
 
     private final String providerDomain, providerName;
@@ -33,11 +34,11 @@ public class AntimatterFluidTagProvider extends FluidTagsProvider implements IAn
     public void run() {
         this.tagToBuilder.clear();
         registerTags();
-        TagCollection<Fluid> tags = new TagCollection<>(f -> Optional.empty(), "", false, "generated");
+        /*TagCollection<Fluid> tags = new TagCollection<>(f -> Optional.empty(), "", false, "generated");
         Map<ResourceLocation, Tag.Builder<Fluid>> map = this.tagToBuilder.entrySet().stream().collect(Collectors.toMap(k -> k.getKey().getId(), Map.Entry::getValue));
         tags.registerAll(map);
         tags.getTagMap().forEach((k, v) -> DynamicResourcePack.addTag("fluids", k, v.serialize(this.registry::getKey)));
-        this.setCollection(tags);
+        this.setCollection(tags);*/
     }
 
     @Override
@@ -51,7 +52,7 @@ public class AntimatterFluidTagProvider extends FluidTagsProvider implements IAn
     }
 
     protected void processTags(String domain) {
-        AntimatterAPI.all(AntimatterFluid.class, domain).forEach(f -> getBuilder(Utils.getForgeFluidTag(f.getId())).add(f.getFluid(), f.getFlowingFluid()).replace(replace));
+        AntimatterAPI.all(AntimatterFluid.class, domain).forEach(f -> getOrCreateBuilder(Utils.getForgeFluidTag(f.getId())).add(f.getFluid(), f.getFlowingFluid()).replace(replace));
     }
 
     @Override

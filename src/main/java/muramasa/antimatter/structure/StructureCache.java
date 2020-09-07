@@ -1,14 +1,14 @@
 package muramasa.antimatter.structure;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.*;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import muramasa.antimatter.Antimatter;
 import muramasa.antimatter.AntimatterAPI;
 import muramasa.antimatter.tile.multi.TileEntityMultiMachine;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,12 +19,12 @@ import javax.annotation.Nullable;
 @Mod.EventBusSubscriber
 public class StructureCache {
 
-    private static final Int2ObjectMap<DimensionEntry> LOOKUP = new Int2ObjectOpenHashMap<>();
+    private static final Object2ObjectMap<RegistryKey<World>, DimensionEntry> LOOKUP = new Object2ObjectOpenHashMap<>();
 
     static {
         AntimatterAPI.registerBlockUpdateHandler((world, pos, oldState, newState) -> {
             if (oldState == newState) return;  // TODO: better checks?
-            StructureCache.DimensionEntry entry = LOOKUP.get(world.dimension.getType().getId());
+            StructureCache.DimensionEntry entry = LOOKUP.get(world.getDimensionKey());
             if (entry == null) return;
             BlockPos controllerPos = entry.get(pos);
             if (controllerPos != null) invalidateController(world, controllerPos);
@@ -32,34 +32,30 @@ public class StructureCache {
     }
 
     public static boolean has(World world, BlockPos pos) {
-        DimensionEntry entry = LOOKUP.get(getDimId(world));
+        DimensionEntry entry = LOOKUP.get(world.getDimensionKey());
         return entry != null && entry.get(pos) != null;
     }
 
     @Nullable
     public static BlockPos get(World world, BlockPos pos) {
-        DimensionEntry entry = LOOKUP.get(getDimId(world));
+        DimensionEntry entry = LOOKUP.get(world.getDimensionKey());
         return entry != null ? entry.get(pos) : null;
     }
 
     public static void add(World world, BlockPos pos, LongList structure) {
-        DimensionEntry entry = LOOKUP.computeIfAbsent(getDimId(world), e -> new DimensionEntry());
+        DimensionEntry entry = LOOKUP.computeIfAbsent(world.getDimensionKey(), e -> new DimensionEntry());
         entry.add(pos, structure);
         Antimatter.LOGGER.info("Added Structure to Store!");
     }
 
-    public static void remove(IWorld world, BlockPos pos) {
-        DimensionEntry entry = LOOKUP.get(getDimId(world));
+    public static void remove(World world, BlockPos pos) {
+        DimensionEntry entry = LOOKUP.get(world.getDimensionKey());
         if (entry == null) return;
         entry.remove(pos);
         Antimatter.LOGGER.info("Removed Structure to Store!");
     }
 
-    private static int getDimId(IWorld world) {
-        return world.getDimension().getType().getId();
-    }
-
-    private static void invalidateController(IWorld world, BlockPos pos) {
+    private static void invalidateController(World world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileEntityMultiMachine) ((TileEntityMultiMachine) tile).invalidateStructure();
         remove(world, pos);
@@ -67,17 +63,17 @@ public class StructureCache {
 
     @SubscribeEvent
     public static void onWorldUnload(WorldEvent.Unload e) {
-        LOOKUP.remove(e.getWorld().getDimension().getType().getId());
+        LOOKUP.remove(((World)e.getWorld()).getDimensionKey());
     }
 
 //    @SubscribeEvent
 //    public static void onBlockClickEvent(PlayerInteractEvent.RightClickBlock e) {
 //        if (e.getEntityPlayer().isSneaking()) return;
-//        DimensionEntry entry = LOOKUP.get(e.getWorld().getDimension().getType().getId());
+//        DimensionEntry entry = LOOKUP.get(e.getWorld().getDimensionKey());
 //        if (entry == null) return;
 //        BlockPos controllerPos = entry.get(e.getPos());
 //        if (controllerPos == null) return;
-//        Vec3d hit = e.getHitVec();
+//        Vector3d hit = e.getHitVec();
 //        BlockState state = e.getWorld().getBlockState(e.getPos());
 //        if (!state.getBlock().onBlockActivated(e.getWorld(), e.getPos(), state, e.getEntityPlayer(), e.getHand(), e.getFace(), (float) hit.x, (float) hit.y, (float) hit.z)) {
 //            state = e.getWorld().getBlockState(controllerPos);

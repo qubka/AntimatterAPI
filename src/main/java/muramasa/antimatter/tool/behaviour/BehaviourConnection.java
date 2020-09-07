@@ -2,7 +2,7 @@ package muramasa.antimatter.tool.behaviour;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraftforge.client.event.DrawHighlightEvent;

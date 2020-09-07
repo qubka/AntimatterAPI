@@ -2,13 +2,11 @@ package muramasa.antimatter.network.packets;
 
 import muramasa.antimatter.gui.event.GuiEvent;
 import muramasa.antimatter.capability.IGuiHandler;
-import muramasa.antimatter.tile.TileEntityTickable;
 import muramasa.antimatter.util.Utils;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
@@ -18,10 +16,10 @@ public class GuiEventPacket {
 
     private final GuiEvent event;
     private final BlockPos pos;
-    private final int dimension;
+    private final Object dimension;
     private final int[] data;
 
-    public GuiEventPacket(GuiEvent event, BlockPos pos, int dimension, int... data) {
+    public GuiEventPacket(GuiEvent event, BlockPos pos, Object dimension, int... data) {
         this.event = event;
         this.pos = pos;
         this.dimension = dimension;
@@ -31,7 +29,7 @@ public class GuiEventPacket {
     public static void encode(GuiEventPacket msg, PacketBuffer buf) {
         buf.writeEnumValue(msg.event);
         buf.writeBlockPos(msg.pos);
-        buf.writeVarInt(msg.dimension);
+        //buf.writeVarInt(msg.dimension);
         buf.writeVarIntArray(msg.data);
     }
 
@@ -41,14 +39,14 @@ public class GuiEventPacket {
 
     public static void handle(final GuiEventPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            DimensionType dimensionType = DimensionType.getById(msg.dimension);
+            /*DimensionType dimensionType = DimensionType.getById(msg.dimension);
             if (dimensionType != null) {
                 World world = ServerLifecycleHooks.getCurrentServer().getWorld(dimensionType);
                 TileEntity tile = Utils.getTile(world, msg.pos);
                 if (tile instanceof IGuiHandler) {
                     ((IGuiHandler) tile).onGuiEvent(msg.event, msg.data);
                 }
-            }
+            }*/
         });
         ctx.get().setPacketHandled(true);
     }

@@ -2,7 +2,10 @@ package muramasa.antimatter.util;
 
 public class int4 {
 
-    public int x, y, z, w;
+    private int x;
+    private int y;
+    private int z;
+    private int w;
 
     public int4() {
         x = y = z = w = 0;
@@ -24,6 +27,22 @@ public class int4 {
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ", " + z + ", " + w + ")";
+        return "(" + getX() + ", " + getY() + ", " + getZ() + ", " + getW() + ")";
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public int getW() {
+        return w;
     }
 }

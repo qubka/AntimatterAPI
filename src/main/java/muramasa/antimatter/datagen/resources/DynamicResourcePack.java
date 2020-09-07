@@ -30,7 +30,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class DynamicResourcePack implements IResourcePack {
 
     protected static final ObjectSet<String> CLIENT_DOMAINS = new ObjectOpenHashSet<>();

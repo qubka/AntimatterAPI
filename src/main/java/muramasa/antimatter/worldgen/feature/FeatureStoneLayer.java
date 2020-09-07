@@ -8,11 +8,14 @@ import muramasa.antimatter.worldgen.StoneLayerOre;
 import muramasa.antimatter.worldgen.WorldGenHelper;
 import muramasa.antimatter.worldgen.object.WorldGenStoneLayer;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -21,12 +24,13 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class FeatureStoneLayer extends AntimatterFeature<NoFeatureConfig> {
 
     public FeatureStoneLayer() {
-        super(NoFeatureConfig::deserialize, WorldGenStoneLayer.class);
+        super(NoFeatureConfig.field_236558_a_, WorldGenStoneLayer.class);
     }
 
     @Override
@@ -41,16 +45,15 @@ public class FeatureStoneLayer extends AntimatterFeature<NoFeatureConfig> {
 
     @Override
     public void init() {
-        for (Biome biome : ForgeRegistries.BIOMES) {
-            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, new ConfiguredFeature<>(this, IFeatureConfig.NO_FEATURE_CONFIG));
-        }
+        AntimatterWorldGenerator.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, () -> new ConfiguredFeature<>(this, IFeatureConfig.NO_FEATURE_CONFIG));
     }
 
     @Override
-    public boolean place(IWorld world, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        List<WorldGenStoneLayer> stones = AntimatterWorldGenerator.all(WorldGenStoneLayer.class, world.getDimension().getType().getId());
+    public boolean func_241855_a(ISeedReader reader, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+        World world = reader.getWorld();
+        List<WorldGenStoneLayer> stones = AntimatterWorldGenerator.all(WorldGenStoneLayer.class, world.getDimensionKey());
         WorldGenStoneLayer[] layers = new WorldGenStoneLayer[7];
-        NoiseGenerator noise = new NoiseGenerator(world);
+        NoiseGenerator noise = new NoiseGenerator(reader);
         int stonesSize = stones.size(), stonesMax = stonesSize - 1;
         BlockState existing;
         int maxHeight;

@@ -148,8 +148,8 @@ public class BlockMachine extends BlockDynamic implements IAntimatterObject, IIt
     @Override
     public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag flag) {
         if (getType().has(BASIC)) {
-            tooltip.add(new TranslationTextComponent("machine.voltage.in").appendText(TextFormatting.GREEN + "" + getTier().getVoltage() + " (" + getTier().getId().toUpperCase() + ")"));
-            tooltip.add(new TranslationTextComponent("machine.power.capacity").appendText(TextFormatting.BLUE + "" + (getTier().getVoltage() * 64)));
+            tooltip.add(new TranslationTextComponent("machine.voltage.in").appendString(TextFormatting.GREEN + "" + getTier().getVoltage() + " (" + getTier().getId().toUpperCase() + ")"));
+            tooltip.add(new TranslationTextComponent("machine.power.capacity").appendString(TextFormatting.BLUE + "" + (getTier().getVoltage() * 64)));
         }
     }
 
@@ -200,7 +200,7 @@ public class BlockMachine extends BlockDynamic implements IAntimatterObject, IIt
         ItemModelBuilder b = prov.getBuilder(item).parent(prov.existing(Ref.ID, "block/preset/layered")).texture("base", type.getBaseTexture(tier));
         Texture[] overlays = type.getOverlayTextures(MachineState.ACTIVE);
         for (int s = 0; s < 6; s++) {
-            b.texture("overlay" + Ref.DIRS[s].getName(), overlays[s]);
+            b.texture("overlay" + Ref.DIRS[s].getName2(), overlays[s]);
         }
     }
 

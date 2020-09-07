@@ -21,8 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static muramasa.antimatter.Data.WIRE_CUTTER;
 import static muramasa.antimatter.Data.WRENCH;
-
-@ParametersAreNonnullByDefault
 public class PipeInteractHandler extends InteractHandler<TileEntityPipe> implements ICapabilityHandler {
 
     private byte connection; // for wrappers around the tile

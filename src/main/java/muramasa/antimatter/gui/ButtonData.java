@@ -1,5 +1,8 @@
 package muramasa.antimatter.gui;
 
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+
 public class ButtonData {
 
     private int id;
@@ -9,7 +12,7 @@ public class ButtonData {
     private int h;
     private ButtonBody body;
     private ButtonOverlay overlay;
-    private String text = "";
+    private ITextComponent text = new StringTextComponent("");
 
     public ButtonData(int id, int x, int y, int w, int h, ButtonBody body) {
         this.id = id;
@@ -20,7 +23,7 @@ public class ButtonData {
         this.body = body;
     }
 
-    public ButtonData(int id, int x, int y, int w, int h, ButtonBody body, String text) {
+    public ButtonData(int id, int x, int y, int w, int h, ButtonBody body, ITextComponent text) {
         this(id, x, y, w, h, body);
         this.text = text;
     }
@@ -58,7 +61,7 @@ public class ButtonData {
         return overlay;
     }
 
-    public String getText() {
+    public ITextComponent getText() {
         return text;
     }
 }

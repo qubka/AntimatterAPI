@@ -7,6 +7,7 @@ import muramasa.antimatter.machine.types.Machine;
 import muramasa.antimatter.registration.IAntimatterObject;
 import muramasa.antimatter.util.int4;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.List;
 
@@ -105,7 +106,7 @@ public class GuiData {
         return this;
     }
 
-    public GuiData addButton(int x, int y, int w, int h, ButtonBody body, String text) {
+    public GuiData addButton(int x, int y, int w, int h, ButtonBody body, ITextComponent text) {
         BUTTON_LIST.add(new ButtonData(BUTTON_LIST.size(), x, y, w, h, body, text));
         return this;
     }

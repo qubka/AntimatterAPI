@@ -8,10 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import javax.annotation.Nullable;
@@ -58,10 +55,10 @@ public class ItemBattery extends ItemBasic<ItemBattery> {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (player.isShiftKeyDown() && !world.isRemote()) {
+        if (/*player.isShiftKeyDown() && */!world.isRemote()) {
             ItemStack stack = player.getHeldItem(hand);
             boolean newMode = chargeModeSwitch(stack);
-            player.sendMessage(new TranslationTextComponent(newMode ? "message.discharge.on" : "message.discharge.off"));
+            //player.sendMessage(new TranslationTextComponent(newMode ? "message.discharge.on" : "message.discharge.off"));
             return ActionResult.resultSuccess(stack);
         } else {
             return super.onItemRightClick(world, player, hand);
@@ -85,7 +82,7 @@ public class ItemBattery extends ItemBasic<ItemBattery> {
             tooltip.add(new TranslationTextComponent("item.reusable"));
         }
         long energy = ItemEnergyHandler.getEnergyFromStack(stack);
-        tooltip.add(new TranslationTextComponent("item.charge").appendText(": ").appendSibling(new StringTextComponent( energy + "/" + cap).applyTextStyle(energy == 0 ? TextFormatting.RED :  TextFormatting.GREEN)).appendText(" (" + tier.getId().toUpperCase() + ")"));
+        tooltip.add(new TranslationTextComponent("item.charge").appendString(": ").append(new StringTextComponent( energy + "/" + cap).setStyle(Style.EMPTY.setFormatting(energy == 0 ? TextFormatting.RED :  TextFormatting.GREEN))).appendString(" (" + tier.getId().toUpperCase() + ")"));
         super.addInformation(stack, worldIn, tooltip, flag);
     }
 }

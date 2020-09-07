@@ -20,9 +20,7 @@ import java.util.Set;
 
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
-
-@ParametersAreNonnullByDefault
-public class FluidTileWrapper implements IFluidNode, ITileWrapper {
+public class FluidTileWrapper implements IFluidNode<FluidStack>, ITileWrapper {
 
     private TileEntity tile;
     private boolean removed;
@@ -43,7 +41,7 @@ public class FluidTileWrapper implements IFluidNode, ITileWrapper {
         if (capability.isPresent()) {
             FluidTileWrapper node = new FluidTileWrapper(tile, capability.orElse(null));
             capability.addListener(x -> node.onRemove(null));
-            Tesseract.FLUID.registerNode(tile.getWorld().getDimension().getType().getId(), tile.getPos().toLong(), node);
+            Tesseract.FLUID.registerNode(tile.getWorld().getDimensionKey(), tile.getPos().toLong(), node);
             return node;
         }
         return null;
@@ -53,7 +51,7 @@ public class FluidTileWrapper implements IFluidNode, ITileWrapper {
     public void onRemove(@Nullable Direction side) {
         if (side == null) {
             if (tile.isRemoved()) {
-                Tesseract.FLUID.remove(tile.getWorld().getDimension().getType().getId(), tile.getPos().toLong());
+                Tesseract.FLUID.remove(tile.getWorld().getDimensionKey(), tile.getPos().toLong());
                 removed = true;
             } else {
                 // What if tile is recreate cap ?

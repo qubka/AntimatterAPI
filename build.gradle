@@ -1,13 +1,15 @@
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
         mavenCentral()
-        maven { 
-            url 'http://dvs1.progwml6.com/files/maven' 
+        maven {
+            url = 'https://files.minecraftforge.net/maven'
         }
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url 'http://dvs1.progwml6.com/files/maven'
+        }
+        maven {
+            url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
@@ -16,18 +18,13 @@ buildscript {
     }
 }
 
-apply plugin: "com.github.johnrengelman.shadow"
-
-repositories {
-    maven { url 'http://dvs1.progwml6.com/files/maven' }
-}
-
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "com.github.johnrengelman.shadow"
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.0.1'
+version = "${minecraft_version}-${mod_version}"
 group = 'com.github.gregtech-intergalactical' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'antimatter'
 
@@ -149,15 +146,9 @@ dependencies {
     // compile "some.group:artifact:version"
     implementation project(path: ':tesseract:forge', configuration: 'deobf')
 
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    if (local_dev_dependancies.toBoolean()) {
-        compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
-        runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-    }
-    else {
-        compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
-        runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-    }
     // Real examples
     // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -174,6 +165,29 @@ dependencies {
 
 }
 
+repositories {
+    maven {
+        name = "mappings"
+        url 'https://dogforce-games.com/maven'
+    }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.k-4u.nl"
+    }
+    maven {
+        name = "curios"
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
+        url 'http://maven.mcmoddev.com'
+    }
+}
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file

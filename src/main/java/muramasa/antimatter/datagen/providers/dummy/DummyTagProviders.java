@@ -4,7 +4,6 @@ import muramasa.antimatter.Ref;
 import net.minecraft.block.Block;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
-import net.minecraft.tags.TagCollection;
 import net.minecraftforge.common.data.ForgeBlockTagsProvider;
 import net.minecraftforge.common.data.ForgeItemTagsProvider;
 
@@ -19,16 +18,16 @@ public class DummyTagProviders {
     public static class ForgeItemTagsProviderOverride extends ForgeItemTagsProvider {
 
         public ForgeItemTagsProviderOverride() {
-            super(Ref.BACKGROUND_GEN);
+            super(Ref.BACKGROUND_GEN, new BlockTagsProvider(Ref.BACKGROUND_GEN));
         }
 
         @Override
         public void act(DirectoryCache cache) {
             this.tagToBuilder.clear();
             this.registerTags();
-            TagCollection<Item> collection = new TagCollection<>(f -> Optional.empty(), "", false, "generated");
+            /*TagCollection<Item> collection = new TagCollection<>(f -> Optional.empty(), "", false, "generated");
             collection.registerAll(this.tagToBuilder.entrySet().stream().collect(Collectors.toMap(m -> m.getKey().getId(), Map.Entry::getValue)));
-            this.setCollection(collection);
+            this.setCollection(collection);*/
         }
 
     }
@@ -43,9 +42,9 @@ public class DummyTagProviders {
         public void act(DirectoryCache cache) {
             this.tagToBuilder.clear();
             this.registerTags();
-            TagCollection<Block> collection = new TagCollection<>(f -> Optional.empty(), "", false, "generated");
+            /*TagCollection<Block> collection = new TagCollection<>(f -> Optional.empty(), "", false, "generated");
             collection.registerAll(this.tagToBuilder.entrySet().stream().collect(Collectors.toMap(m -> m.getKey().getId(), Map.Entry::getValue)));
-            this.setCollection(collection);
+            this.setCollection(collection);*/
         }
     }
 }

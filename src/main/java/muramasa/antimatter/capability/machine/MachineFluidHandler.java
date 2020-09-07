@@ -5,7 +5,6 @@ import muramasa.antimatter.capability.ICapabilityHandler;
 import muramasa.antimatter.capability.IMachineHandler;
 import muramasa.antimatter.capability.fluid.FluidTankWrapper;
 import muramasa.antimatter.gui.SlotType;
-import muramasa.antimatter.machine.MachineFlag;
 import muramasa.antimatter.machine.event.ContentEvent;
 import muramasa.antimatter.machine.event.IMachineEvent;
 import muramasa.antimatter.recipe.Recipe;
@@ -19,7 +18,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import tesseract.Tesseract;
 import tesseract.api.fluid.FluidData;
@@ -32,7 +30,6 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-import static muramasa.antimatter.machine.MachineFlag.FLUID;
 import static muramasa.antimatter.machine.MachineFlag.GENERATOR;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
@@ -62,7 +59,7 @@ public class MachineFluidHandler<T extends TileEntityMachine> implements IFluidN
     }
 
     public void onInit() {
-        if (tile.isServerSide()) Tesseract.FLUID.registerNode(tile.getDimension(), tile.getPos().toLong(), this);
+        if (tile.isServerSide()) Tesseract.FLUID.registerNode(tile.getDimensionKey(), tile.getPos().toLong(), this);
     }
 
     public void onUpdate() {
@@ -70,13 +67,13 @@ public class MachineFluidHandler<T extends TileEntityMachine> implements IFluidN
     }
 
     public void onRemove() {
-        if (tile.isServerSide()) Tesseract.FLUID.remove(tile.getDimension(), tile.getPos().toLong());
+        if (tile.isServerSide()) Tesseract.FLUID.remove(tile.getDimensionKey(), tile.getPos().toLong());
     }
 
     public void onReset() {
         if (tile.isServerSide()) {
-            Tesseract.FLUID.remove(tile.getDimension(), tile.getPos().toLong());
-            Tesseract.FLUID.registerNode(tile.getDimension(), tile.getPos().toLong(), this);
+            Tesseract.FLUID.remove(tile.getDimensionKey(), tile.getPos().toLong());
+            Tesseract.FLUID.registerNode(tile.getDimensionKey(), tile.getPos().toLong(), this);
         }
     }
 

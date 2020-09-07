@@ -2,8 +2,8 @@ package muramasa.antimatter.util;
 
 public class int2 {
 
-    public int x;
-    public int y;
+    private int x;
+    private int y;
 
     public int2() {
 
@@ -25,13 +25,21 @@ public class int2 {
         if (this == o) return true;
         if (!(o instanceof int2)) return false;
         int2 other = (int2) o;
-        return x == other.x && y == other.y;
+        return getX() == other.getX() && getY() == other.getY();
     }
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
+        int result = getX();
+        result = 31 * result + getY();
         return result;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

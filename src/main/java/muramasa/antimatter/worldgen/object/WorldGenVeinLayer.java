@@ -12,9 +12,12 @@ import muramasa.antimatter.worldgen.AntimatterWorldGenerator;
 import muramasa.antimatter.worldgen.VeinLayerResult;
 import muramasa.antimatter.worldgen.WorldGenHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -31,7 +34,7 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
 
     private static final WorldGenVeinLayer NO_ORES_IN_VEIN = new WorldGenVeinLayer("NoOresInVein", 0, 255, 0, 255, 16, null, null, null, null) {
         @Override
-        VeinLayerResult generateChunkified(IWorld world, XSTR rand, int posX, int posZ, int seedX, int seedZ) {
+        VeinLayerResult generateChunkified(World world, XSTR rand, int posX, int posZ, int seedX, int seedZ) {
             return NO_ORES_VEIN;
         }
     };
@@ -40,8 +43,8 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
     private String primary, secondary, between, sporadic;
     private int minY, maxY, weight, density, size;
 
-    public WorldGenVeinLayer(String id, int minY, int maxY, int weight, int density, int size, Material primary, Material secondary, Material between, Material sporadic, int... dimensions) {
-        super(id, WorldGenVeinLayer.class, dimensions);
+    public WorldGenVeinLayer(String id, int minY, int maxY, int weight, int density, int size, Material primary, Material secondary, Material between, Material sporadic, RegistryKey<World>... dims) {
+        super(id, WorldGenVeinLayer.class, dims);
         this.minY = minY;
         this.maxY = maxY;
         this.weight = weight;
@@ -129,8 +132,9 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
     // Actual spawn rates will vary based upon the average height of the stone layers
     // in the dimension. For example veins that range above and below the average height
     // will be less, and veins that are completely above the average height will be much less.
-    public static void generate(IWorld world, int chunkX, int chunkZ, int oreSeedX, int oreSeedZ) {
-        List<WorldGenVeinLayer> veins = AntimatterWorldGenerator.all(WorldGenVeinLayer.class, world.getDimension().getType().getId());
+    public static void generate(ISeedReader reader, int chunkX, int chunkZ, int oreSeedX, int oreSeedZ) {
+        World world = reader.getWorld();
+        List<WorldGenVeinLayer> veins = AntimatterWorldGenerator.all(WorldGenVeinLayer.class, world.getDimensionKey());
         if (veins == null || veins.size() == 0)
             return;
 
@@ -139,11 +143,11 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
         // ((this.world.provider.getDimension() & 0xffL)<<56)    Puts the dimension in the top bits of the hash, to make sure to get unique hashes per dimension
         // ((long)oreSeedX & 0x000000000fffffffL) << 28)    Puts the chunk X in the bits 29-55. Cuts off the top few bits of the chunk so we have bits for dimension.
         // ((long)oreSeedZ & 0x000000000fffffffL))    Puts the chunk Z in the bits 0-27. Cuts off the top few bits of the chunk so we have bits for dimension.
-        long oreVeinSeed = getOreVeinSeed(world, oreSeedX, oreSeedZ);
+        long oreVeinSeed = getOreVeinSeed(reader, world, oreSeedX, oreSeedZ);
         XSTR oreVeinRNG = new XSTR(oreVeinSeed);
         int oreVeinPercentageRoll = oreVeinRNG.nextInt(100); // Roll the dice, see if we get an orevein here at all
         if (Ref.debugOreVein)
-            Antimatter.LOGGER.info("Finding oreveins for oreVeinSeed="+ oreVeinSeed + " chunkX="+ chunkX + " chunkZ="+ chunkZ + " oreSeedX=" + oreSeedX + " oreSeedZ=" + oreSeedZ + " worldSeed=" + world.getSeed());
+            Antimatter.LOGGER.info("Finding oreveins for oreVeinSeed="+ oreVeinSeed + " chunkX="+ chunkX + " chunkZ="+ chunkZ + " oreSeedX=" + oreSeedX + " oreSeedZ=" + oreSeedZ + " worldSeed=" + reader.getSeed());
 
         // Search for a valid orevein for this dimension
         if (!VALID_VEINS.containsKey(oreVeinSeed)) {
@@ -164,7 +168,7 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
                             switch (placementResult) {
                                 case ORE_PLACED:
                                     if (Ref.debugOreVein)
-                                        Antimatter.LOGGER.info("Added near oreVeinSeed=" + oreVeinSeed + " " + vein.getId() + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimension());
+                                        Antimatter.LOGGER.info("Added near oreVeinSeed=" + oreVeinSeed + " " + vein.getId() + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimensionKey());
                                     VALID_VEINS.put(oreVeinSeed, vein);
                                     oreVeinFound = true;
                                     break;
@@ -173,13 +177,13 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
                                     break; // Should do retry in this case until out of chances
                                 case NO_OVERLAP:
                                     if (Ref.debugOreVein)
-                                        Antimatter.LOGGER.info("Added far oreVeinSeed=" + oreVeinSeed + " " + vein.getId() + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimension());
+                                        Antimatter.LOGGER.info("Added far oreVeinSeed=" + oreVeinSeed + " " + vein.getId() + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimensionKey());
                                     VALID_VEINS.put(oreVeinSeed, vein);
                                     oreVeinFound = true;
                                     break;
                                 case NO_OVERLAP_AIR_BLOCK:
                                     if (Ref.debugOreVein)
-                                        Antimatter.LOGGER.info("No overlap and air block in test spot=" + oreVeinSeed + " " + vein.getId() + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimension());
+                                        Antimatter.LOGGER.info("No overlap and air block in test spot=" + oreVeinSeed + " " + vein.getId() + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimensionKey());
                                     placementAttempts++;
                                     break; // Should do retry in this case until out of chances
                             }
@@ -190,12 +194,12 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
                 // Only add an empty orevein if unable to place a vein at the oreseed chunk.
                 if (!oreVeinFound && chunkX == oreSeedX && chunkZ == oreSeedZ) {
                     if (Ref.debugOreVein)
-                        Antimatter.LOGGER.info("Empty oreVeinSeed="+ oreVeinSeed + " chunkX="+ chunkX + " chunkZ="+ chunkZ + " oreSeedX="+ oreSeedX + " oreSeedZ="+ oreSeedZ + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimension());
+                        Antimatter.LOGGER.info("Empty oreVeinSeed="+ oreVeinSeed + " chunkX="+ chunkX + " chunkZ="+ chunkZ + " oreSeedX="+ oreSeedX + " oreSeedZ="+ oreSeedZ + " tries at oremix=" + i + " placementAttempts=" + placementAttempts + " dimension=" + world.getDimensionKey());
                     VALID_VEINS.put(oreVeinSeed, NO_ORES_IN_VEIN);
                 }
             } else if (oreVeinPercentageRoll >= AntimatterConfig.WORLD.ORE_VEIN_CHANCE) {
                 if (Ref.debugOreVein)
-                    Antimatter.LOGGER.info("Skipped oreVeinSeed="+ oreVeinSeed + " chunkX="+ chunkX + " chunkZ="+ chunkZ + " oreSeedX=" + oreSeedX + " oreSeedZ=" + oreSeedZ + " RNG=" + oreVeinPercentageRoll + " %=" + AntimatterConfig.WORLD.ORE_VEIN_CHANCE + " dimension=" + world.getDimension());
+                    Antimatter.LOGGER.info("Skipped oreVeinSeed="+ oreVeinSeed + " chunkX="+ chunkX + " chunkZ="+ chunkZ + " oreSeedX=" + oreSeedX + " oreSeedZ=" + oreSeedZ + " RNG=" + oreVeinPercentageRoll + " %=" + AntimatterConfig.WORLD.ORE_VEIN_CHANCE + " dimension=" + world.getDimensionKey());
                 VALID_VEINS.put(oreVeinSeed, NO_ORES_IN_VEIN);
             }
         } else {
@@ -218,11 +222,12 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
         }
     }
 
-    public static long getOreVeinSeed(IWorld world, long oreSeedX, long oreSeedZ) {
-        return world.getSeed() << 16 ^ ((world.getDimension().getType().getId() & 0xffL) << 56 | (oreSeedX & 0x000000000fffffffL) << 28 | oreSeedZ & 0x000000000fffffffL);
+    public static long getOreVeinSeed(ISeedReader reader, World world, long oreSeedX, long oreSeedZ) {
+        //TODO : FIND SOLUTION FOR DIM ID
+        return reader.getSeed() << 16 ^ ((world.getDimensionKey().toString().hashCode() & 0xffL) << 56 | (oreSeedX & 0x000000000fffffffL) << 28 | oreSeedZ & 0x000000000fffffffL);
     }
 
-    VeinLayerResult generateChunkified(IWorld world, XSTR rand, int posX, int posZ, int seedX, int seedZ) {
+    VeinLayerResult generateChunkified(World world, XSTR rand, int posX, int posZ, int seedX, int seedZ) {
         int tMinY = minY + rand.nextInt(maxY - minY - 5);
         
         //If the selected tMinY is more than the max height if the current position, escape
@@ -244,11 +249,12 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
         //Block tBlock = world.getBlock(posX + 7, tMinY, posZ + 9);
 
         if (wX >= eX) {  //No overlap between orevein and this chunk exists in X
-            if (centerState.getBlock().isReplaceableOreGen(centerState, world, centerPos, WorldGenHelper.ORE_PREDICATE)) {
+            /*if (centerState.getBlock().isReplaceableOreGen(centerState, world, centerPos, WorldGenHelper.ORE_PREDICATE)) {
                 return NO_OVERLAP; // Didn't reach, but could have placed. Save orevein for future use.
             } else {
                 return NO_OVERLAP_AIR_BLOCK;// Didn't reach, but couldn't place in test spot anywys, try for another orevein
-            }
+            }*/
+            return NO_OVERLAP_AIR_BLOCK;
         }
         // Determine North/Sound ends of orevein
         int nZVein = seedZ - rand.nextInt(size);
@@ -257,15 +263,16 @@ public class WorldGenVeinLayer extends WorldGenBase<WorldGenVeinLayer> {
         int nZ = Math.max(nZVein, posZ);
         int sZ = Math.min(sZVein, posZ+ 16);
         if (nZ >= sZ) { //No overlap between orevein and this chunk exists in Z
-            if (centerState.getBlock().isReplaceableOreGen(centerState, world, centerPos, WorldGenHelper.ORE_PREDICATE)) {
+            /*if (centerState.getBlock().isReplaceableOreGen(centerState, world, centerPos, WorldGenHelper.ORE_PREDICATE)) {
                 return NO_OVERLAP; // Didn't reach, but could have placed. Save orevein for future use.
             } else {
                 return NO_OVERLAP_AIR_BLOCK; // Didn't reach, but couldn't place in test spot anywys, try for another orevein
-            }
+            }*/
+            return NO_OVERLAP_AIR_BLOCK;
         }
 
         if (Ref.debugOreVein)
-            Antimatter.LOGGER.info("Trying Orevein:" + getId() + " Dimension=" + world.getDimension() + " posX="+posX/16+ " posZ="+posZ/16+ " oreseedX="+ seedX/16 + " oreseedZ="+ seedZ/16 + " cY="+tMinY);
+            Antimatter.LOGGER.info("Trying Orevein:" + getId() + " Dimension=" + world.getDimensionKey() + " posX="+posX/16+ " posZ="+posZ/16+ " oreseedX="+ seedX/16 + " oreseedZ="+ seedZ/16 + " cY="+tMinY);
         //if (!generateSquare(world, rand, posX, posZ, seedX, seedZ, tMinY, wXVein, eXVein, nZVein, sZVein, wX, eX, nZ, sZ))
         if (!generateByFunction(world, rand, tMinY, wXVein, eXVein, nZVein, sZVein, wX, eX, nZ, sZ))
             return NO_ORE_IN_BOTTOM_LAYER;  // Exit early, didn't place anything in the bottom layer

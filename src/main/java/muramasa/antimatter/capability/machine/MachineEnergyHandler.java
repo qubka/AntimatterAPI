@@ -5,7 +5,6 @@ import muramasa.antimatter.capability.EnergyHandler;
 import muramasa.antimatter.capability.ICapabilityHandler;
 import muramasa.antimatter.capability.IEnergyHandler;
 import muramasa.antimatter.capability.IMachineHandler;
-import muramasa.antimatter.machine.MachineFlag;
 import muramasa.antimatter.machine.event.ContentEvent;
 import muramasa.antimatter.machine.event.IMachineEvent;
 import muramasa.antimatter.machine.event.MachineEvent;
@@ -46,7 +45,7 @@ public class MachineEnergyHandler<T extends TileEntityMachine> extends EnergyHan
     }
 
     public void onInit() {
-        if (tile.isServerSide()) Tesseract.GT_ENERGY.registerNode(tile.getDimension(), tile.getPos().toLong(), this);
+        if (tile.isServerSide()) Tesseract.GT_ENERGY.registerNode(tile.getDimensionKey(), tile.getPos().toLong(), this);
     }
 
     public void onUpdate() {
@@ -54,13 +53,13 @@ public class MachineEnergyHandler<T extends TileEntityMachine> extends EnergyHan
     }
 
     public void onRemove() {
-        if (tile.isServerSide()) Tesseract.GT_ENERGY.remove(tile.getDimension(), tile.getPos().toLong());
+        if (tile.isServerSide()) Tesseract.GT_ENERGY.remove(tile.getDimensionKey(), tile.getPos().toLong());
     }
 
     public void onReset() {
         if (tile.isServerSide()) {
-            Tesseract.GT_ENERGY.remove(tile.getDimension(), tile.getPos().toLong());
-            Tesseract.GT_ENERGY.registerNode(tile.getDimension(), tile.getPos().toLong(), this);
+            Tesseract.GT_ENERGY.remove(tile.getDimensionKey(), tile.getPos().toLong());
+            Tesseract.GT_ENERGY.registerNode(tile.getDimensionKey(), tile.getPos().toLong(), this);
         }
     }
 
