@@ -67,6 +67,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.*;
 
+import static net.minecraft.advancements.criterion.EntityPredicate.AndPredicate.ANY_AND;
 import static net.minecraft.advancements.criterion.MinMaxBounds.IntBound.UNBOUNDED;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE;
 import static net.minecraftforge.fluids.capability.IFluidHandler.FluidAction.SIMULATE;
@@ -365,23 +366,23 @@ public class Utils {
     /**
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having a certain item.
      */
-    /*public static InventoryChangeTrigger.Instance hasItem(IItemProvider itemIn) {
+    public static InventoryChangeTrigger.Instance hasItem(IItemProvider itemIn) {
         return hasItem(ItemPredicate.Builder.create().item(itemIn).build());
-    }*/
+    }
 
     /**
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having an item within the given tag.
      */
-    /*public static InventoryChangeTrigger.Instance hasItem(ITag.INamedTag<Item> tagIn) {
+    public static InventoryChangeTrigger.Instance hasItem(ITag.INamedTag<Item> tagIn) {
         return hasItem(ItemPredicate.Builder.create().tag(tagIn).build());
-    }*/
+    }
 
     /**
      * Creates a new {@link InventoryChangeTrigger} that checks for a player having a certain item.
      */
-    /*public static InventoryChangeTrigger.Instance hasItem(ItemPredicate... predicates) {
-        return new InventoryChangeTrigger.Instance(UNBOUNDED, UNBOUNDED, UNBOUNDED, predicates);
-    }*/
+    public static InventoryChangeTrigger.Instance hasItem(ItemPredicate... predicates) {
+        return new InventoryChangeTrigger.Instance(ANY_AND, UNBOUNDED, UNBOUNDED, UNBOUNDED, predicates);
+    }
 
 //    @Nullable
 //    public static Fluid getFluidById(int id) {
