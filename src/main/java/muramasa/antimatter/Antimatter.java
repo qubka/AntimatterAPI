@@ -7,6 +7,7 @@ import muramasa.antimatter.proxy.CommonHandler;
 import muramasa.antimatter.proxy.IProxyHandler;
 import muramasa.antimatter.proxy.ServerHandler;
 import muramasa.antimatter.registration.RegistrationEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.DistExecutor;
@@ -38,17 +39,18 @@ public class Antimatter extends AntimatterMod {
 
         PROXY = DistExecutor.runForDist(() -> ClientHandler::new, () -> ServerHandler::new); // todo: scheduled to change in new Forge
 
+        //MinecraftForge.EVENT_BUS.register(this);
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, AntimatterConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AntimatterConfig.COMMON_SPEC);
 
-        eventBus.addListener(ClientHandler::onItemColorHandler);
+        /*eventBus.addListener(ClientHandler::onItemColorHandler);
         eventBus.addListener(ClientHandler::onBlockColorHandler);
 
         eventBus.addListener(this::clientSetup);
         eventBus.addListener(this::commonSetup);
-        eventBus.addListener(this::serverSetup);
+        eventBus.addListener(this::serverSetup);*/
 
         AntimatterAPI.addProvider(Ref.ID, g -> new AntimatterBlockStateProvider(Ref.ID, Ref.NAME.concat(" BlockStates"), g));
         AntimatterAPI.addProvider(Ref.ID, g -> new AntimatterItemModelProvider(Ref.ID, Ref.NAME.concat(" Item Models"), g));

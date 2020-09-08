@@ -11,7 +11,7 @@ public abstract class AntimatterMod implements IAntimatterRegistrar {
 
     public AntimatterMod() {
         AntimatterAPI.addRegistrar(this);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::onGatherData);
+        //FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::onGatherData);
     }
 
     public void onGatherData(GatherDataEvent e) {

@@ -1,4 +1,5 @@
 modLoader="javafml"
+license="GPLv3"
 #loaderVersion="[${loader_version},)"
 loaderVersion="[31,)"
 issueTrackerURL="https://github.com/GregTech-Intergalactical/AntimatterAPI/issues"
